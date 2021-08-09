@@ -1,0 +1,33 @@
+{
+    "name": "clearazil/laravel-crud-generator",
+    "description": "Generates crud code from template files",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/contracts": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Clearazil\\LaravelCrudGenerator\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Clearazil\\LaravelCrudGenerator\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Clearazil\\LaravelCrudGenerator\\Providers\\LaravelCrudGeneratorServiceProvider"
+            ]
+        }
+    }
+}

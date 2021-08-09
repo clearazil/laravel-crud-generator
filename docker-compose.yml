@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+
+  php:
+    build:
+      args:
+        user: laravel
+        uid: 1000
+      context: ./.docker/php
+    networks: [backend]
+    volumes:
+        [.:/app]
+    container_name: php_laravel-crud
+
+  node:
+    build:
+      args:
+        user: mastermind
+        uid: 1001
+      context: ./.docker/node
+    networks: [frontend, backend]
+    volumes:
+      [.:/app]
+    ports:
+      [1234:1234]
+    container_name: node_laravel-crud
+    tty: true
+
+  apache:
+    build:
+      context: ./.docker/apache
+    depends_on: [php, mysql]
+    networks: [frontend, backend]
+    ports:
+      [8080:80]
+    volumes:
+      [.:/app]
+    container_name: apache_laravel-crud
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    networks: [backend]
+    ports:
+      [13308:3306]
+    environment:
+      MYSQL_DATABASE: laravel-crud
+      MYSQL_USER: app
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    container_name: mysql_laravel-crud
+networks:
+  frontend:
+  backend:
