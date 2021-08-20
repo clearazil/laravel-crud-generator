@@ -4,7 +4,7 @@ namespace Clearazil\LaravelCrudGenerator\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelCrudGeneratorProvider extends ServiceProvider
+class LaravelCrudGeneratorServiceProvider extends ServiceProvider
 {
     public function boot()
     {

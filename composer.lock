@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7759431e303e2d722a264a8a991a9e84",
+    "content-hash": "a0bbe21d243e2291535df232ae662e88",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -117,6 +117,48 @@
                 }
             ],
             "time": "2021-01-20T22:51:39+00:00"
+        },
+        {
+            "name": "clearazil/laravel-crud-generator",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./packages/laravel-crud-generator",
+                "reference": "fddbee788a08631f1efb5100e6b3e30aca39da83"
+            },
+            "require": {
+                "illuminate/contracts": "^8.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Clearazil\\LaravelCrudGenerator\\Providers\\LaravelCrudGeneratorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Clearazil\\LaravelCrudGenerator\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Clearazil\\LaravelCrudGenerator\\Tests\\": "tests"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Generates crud code from template files",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dflydev/dot-access-data",
@@ -7795,7 +7837,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "clearazil/laravel-crud-generator": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
