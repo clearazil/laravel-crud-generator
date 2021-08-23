@@ -15,7 +15,7 @@ class TestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'test:testing';
+    protected $signature = 'crud-generator:testing';
 
     /**
      * The console command description.
