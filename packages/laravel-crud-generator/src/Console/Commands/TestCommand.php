@@ -1,17 +1,12 @@
 <?php
 
-namespace Clearazil\LaravelCrudGenerator\Commands;
+namespace Clearazil\LaravelCrudGenerator\Console\Commands;
 
 use Illuminate\Console\Command;
 
 /**
  * Undocumented class
  *
- * @category TEst
- * @package  Package
- * @author   Clearazil <clearazil@info.com>
- * @license  license http://url.com
- * @link     http://url.com
  */
 class TestCommand extends Command
 {
