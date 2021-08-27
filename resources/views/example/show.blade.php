@@ -7,16 +7,16 @@
         <a href="{{ route('examples.show', ['example' => $example->id]) }}" title="">{{ $example->title }}</a>
     </h4>
 
-    <a class="btn btn--small" href="{{ route('examples.edit', ['example' => $example->id]) }}">Edit</a>
+    <a class="btn btn-primary" href="{{ route('examples.edit', ['example' => $example->id]) }}">Edit</a>
     <form method="POST" action="{{ route('examples.destroy', ['example' => $example->id])}}">
         @csrf
         @method('DELETE')
-        <button class="btn btn--small" href="{{ route('examples.destroy', ['example' => $example->id]) }}">Delete</button>
+        <button class="btn btn-secondary" href="{{ route('examples.destroy', ['example' => $example->id]) }}">Delete</button>
     </form>
 
     <div class="table-responsive">
 
-        <table>
+        <table class="table">
             <tbody>
                 <tr>
                     <th>Title</th>

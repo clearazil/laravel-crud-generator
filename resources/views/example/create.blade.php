@@ -10,21 +10,24 @@
     <form method="POST" action="{{ route('examples.store') }}" enctype="multipart/form-data">
         @csrf
 
-        <div>
-            <label for="title">Title</label>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
             @error('title')
                 <div class="warning">{{ $message }}</div>
             @enderror
-            <input name="title" class="h-full-width" type="text" id="title" value="{{ old('title') }}">
+            <input name="title" class="form-control" type="text" id="title" value="{{ old('title') }}">
         </div>
 
-        <label for="body">Body</label>
-        @error('body')
-            <div class="warning">{{ $message }}</div>
-        @enderror
-        <textarea name="body" class="h-full-width" id="body">{{ old('body') }}</textarea>
+        <div class="mb-3">
+            <label for="body" class="form-label">Body</label>
+            @error('body')
+                <div class="warning">{{ $message }}</div>
+            @enderror
+            <textarea name="body" class="form-control" id="body">{{ old('body') }}</textarea>
+        </div>
 
-        <input class="btn--primary" type="submit" value="Submit">
+
+        <input class="btn btn-primary" type="submit" value="Submit">
     </form>
 
 @endsection
