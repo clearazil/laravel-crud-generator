@@ -36,7 +36,7 @@ class ExampleController extends Controller
 
         $example->save();
 
-        return redirect(route('example.show', ['example' => $example->id]));
+        return redirect(route('examples.show', ['example' => $example->id]));
     }
 
     public function edit(Example $example, Request $request)
@@ -53,10 +53,10 @@ class ExampleController extends Controller
         $example->fill($data);
         $example->save();
 
-        return redirect(route('example.show', ['example' => $example->id]));
+        return redirect(route('examples.show', ['example' => $example->id]));
     }
 
-    public function delete(Example $example, Request $request)
+    public function destroy(Example $example, Request $request)
     {
         if ($example->delete()) {
             $messageStatus = 'success';
@@ -68,7 +68,7 @@ class ExampleController extends Controller
 
         $request->session()->flash('message-status', $messageStatus);
 
-        return redirect(route('example.index'));
+        return redirect(route('examples.index'));
     }
 
     public function validateExample(Request $request)

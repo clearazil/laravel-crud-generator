@@ -2,9 +2,9 @@
 
 @section('content')
 
-    <h4 class="h-remove-top"><a href="{{ route('example.index') }}">Examples</a></h4>
+    <h4 class="h-remove-top"><a href="{{ route('examples.index') }}">Examples</a></h4>
 
-    <a class="btn btn--small" href="{{ route('example.create') }}">New Example</a>
+    <a class="btn btn--small" href="{{ route('examples.create') }}">New Example</a>
 
     @if (Session::has('message') && Session::has('message-status'))
         <div class="alert-box {{ Session::get('message-status') === 'error' ? 'alert-box--error' : '' }} {{ Session::get('message-status') === 'success' ? 'alert-box--success' : '' }} hideit">
@@ -26,7 +26,7 @@
                 <tbody>
                     @foreach ($examples as $example)
                         <tr>
-                            <td><a href="{{ route('example.show', ['example' => $example->id]) }}" title="">{{ $example->title }}</a></td>
+                            <td><a href="{{ route('examples.show', ['example' => $example->id]) }}" title="">{{ $example->title }}</a></td>
                             <td>{{ $example->created_at->isoformat('D-M-Y HH:mm:ss') }}</td>
                             <td>{{ $example->updated_at->isoformat('D-M-Y HH:mm:ss') }}</td>
                         </tr>
@@ -36,6 +36,6 @@
 
     </div>
 
-    {{ $example->links() }}
+    {{ $examples->links() }}
 
 @endsection

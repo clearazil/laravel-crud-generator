@@ -3,12 +3,12 @@
 @section('content')
 
     <h4 class="h-remove-top">
-        <a href="{{ route('example.index') }}">Examples</a> \
-        <a href="{{ route('example.show', ['example' => $example->id]) }}">{{ $example->title }}</a> \
-        <a href="{{ route('example.edit', ['post' => $example->id]) }}">Edit</a>
+        <a href="{{ route('examples.index') }}">Examples</a> \
+        <a href="{{ route('examples.show', ['example' => $example->id]) }}">{{ $example->title }}</a> \
+        <a href="{{ route('examples.edit', ['example' => $example->id]) }}">Edit</a>
     </h4>
 
-    <form method="POST" action="{{ route('example.update', ['example' => $example->id]) }}">
+    <form method="POST" action="{{ route('examples.update', ['example' => $example->id]) }}">
         @csrf
         @method('PUT')
 

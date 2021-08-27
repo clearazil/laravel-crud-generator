@@ -3,11 +3,11 @@
 @section('content')
 
     <h4 class="h-remove-top">
-        <a href="{{ route('example.index') }}">Examples</a> \
-        <a href="{{ route('example.create') }}">New Example</a>
+        <a href="{{ route('examples.index') }}">Examples</a> \
+        <a href="{{ route('examples.create') }}">New Example</a>
     </h4>
 
-    <form method="POST" action="{{ route('example.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('examples.store') }}" enctype="multipart/form-data">
         @csrf
 
         <div>
