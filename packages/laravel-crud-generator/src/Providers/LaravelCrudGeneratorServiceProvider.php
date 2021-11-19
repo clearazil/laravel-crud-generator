@@ -2,7 +2,7 @@
 
 namespace Clearazil\LaravelCrudGenerator\Providers;
 
-use Clearazil\LaravelCrudGenerator\Console\Commands\TestCommand;
+use Clearazil\LaravelCrudGenerator\Console\Commands\CreateCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -15,7 +15,7 @@ class LaravelCrudGeneratorServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                TestCommand::class,
+                CreateCommand::class,
             ]);
         }
 

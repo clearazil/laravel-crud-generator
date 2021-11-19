@@ -15,7 +15,7 @@ class CreateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'crud-generator:testing';
+    protected $signature = 'crud-generator:create';
 
     /**
      * The console command description.
