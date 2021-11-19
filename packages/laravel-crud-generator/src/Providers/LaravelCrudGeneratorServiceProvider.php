@@ -18,5 +18,12 @@ class LaravelCrudGeneratorServiceProvider extends ServiceProvider
                 TestCommand::class,
             ]);
         }
+
+        $this->publishes([
+            __DIR__.'/config/crudgenerator.php' =>  config_path('crudgenerator.php'),
+         ], 'config');
+        $this->publishes([
+            __DIR__.'/../resources/crud-generator' => resource_path('crud-generator'),
+        ]);
     }
 }

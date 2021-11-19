@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
  * Undocumented class
  *
  */
-class TestCommand extends Command
+class CreateCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -22,7 +22,7 @@ class TestCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Test command in package';
+    protected $description = 'Generate code from a template';
 
     /**
      * Create a new command instance.
