@@ -1,11 +1,11 @@
-@extends('~~layout-name~~')
+@extends('layouts.main')
 
 @section('content')
 
     <h4 class="h-remove-top">
-        <a href="{{ route('~~model-name-plural~~.index') }}">Examples</a> \
-        <a href="{{ route('~~model-name-plural~~.show', ['example' => $example->id]) }}">{{ $example->title }}</a> \
-        <a href="{{ route('~~model-name-plural~~.edit', ['example' => $example->id]) }}">Edit</a>
+        <a href="{{ route('examples.index') }}">Examples</a> \
+        <a href="{{ route('examples.show', ['example' => $example->id]) }}">{{ $example->title }}</a> \
+        <a href="{{ route('examples.edit', ['example' => $example->id]) }}">Edit</a>
     </h4>
 
     <form method="POST" action="{{ route('examples.update', ['example' => $example->id]) }}">
@@ -27,6 +27,7 @@
             @enderror
             <textarea name="body" class="form-control" id="body">{{ (old('body', $example->body)) }}</textarea>
         </div>
+
 
         <input class="btn btn-primary" type="submit" value="Submit">
     </form>

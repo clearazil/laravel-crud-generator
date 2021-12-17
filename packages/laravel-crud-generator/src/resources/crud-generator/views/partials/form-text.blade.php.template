@@ -1,7 +1,0 @@
-<div class="mb-3">
-    <label for="~~name~~" class="form-label">~~Name~~</label>
-    @error('~~name~~')
-        <div class="warning">{{ $message }}</div>
-    @enderror
-    <input name="~~name~~" class="form-control" type="text" id="title" value="~~form-value~~">
-</div>
