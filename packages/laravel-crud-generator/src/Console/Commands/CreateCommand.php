@@ -26,6 +26,11 @@ class CreateCommand extends Command
      */
     protected $description = 'Generate code from a template';
 
+    protected $fieldOptions = [
+        1 => 'text',
+        2 => 'textarea',
+    ];
+
     /**
      * Create a new command instance.
      *
@@ -46,82 +51,126 @@ class CreateCommand extends Command
         //var_dump(__DIR__);die;
         $modelName = strtolower($this->ask('Model name:'));
 
-        $file = file_get_contents(__DIR__ . '/stubs/views/create.blade.php.stub');
-
-        $field = '';
-        $fields = '';
-
-        while ($field !== null) {
-            $field = $this->ask("Submit fields \n1. text\n2. textarea\n\nEnter nothing to stop submitting fields");
-
-            if (empty($field)) {
-                $field = null;
-                break;
-            }
-
-            $formField = $this->createFormField($field);
-            if (!empty($formField)) {
-                $fields = $fields . "\n$formField";
-            }
-        }
-
-        $file = str_replace('**fields**', $fields, $file);
-
-        $file = str_replace([
-            '**nameUppercase**',
-            '**namePluralLowercase**',
-            '**namePluralUppercase**',
-            '**enctype**',
-        ], [
-            ucfirst($modelName),
-            Str::plural($modelName),
-            ucfirst(Str::plural($modelName)),
-            'enctype="multipart/form-data', // only with file upload
-        ], $file);
-        //var_dump($file);die;
-
         $storageDriver = Storage::build([
             'driver' => 'local',
             'root' => base_path(),
         ]);
 
-        $storageDriver->put('resources/views/' . $modelName . '/create.blade.php', $file);
+        $files = [
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/views/create.blade.php.stub'),
+                'targetDir' => 'resources/views/' . $modelName . '/',
+                'name' => 'create.blade.php',
+            ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/views/edit.blade.php.stub'),
+                'targetDir' => 'resources/views/' . $modelName . '/',
+                'name' => 'edit.blade.php',
+            ],
+        ];
+
+        $type = '';
+
+
+        $dataFields = [];
+
+        while ($type !== null) {
+            $typeIsValid = false;
+
+            while (!$typeIsValid) {
+                $type = $this->ask("Submit fields \n1. text\n2. textarea\n\nEnter nothing to stop submitting fields");
+
+                if (empty($type)) {
+                    $type = null;
+                    break;
+                }
+
+                if (isset($this->fieldOptions[$type])) {
+                    $typeIsValid = true;
+                } else {
+                    $this->error('You submitted an invalid option.');
+                }
+            }
+
+            if ($type === null) {
+                break;
+            }
+
+            $name = strtolower($this->ask('Submit a name for the field'));
+
+            $dataFields[] = [
+                'type' => $type,
+                'name' => $name,
+            ];
+        }
+
+        foreach ($files as $file) {
+            $fields = '';
+            $fileContents = $file['contents'];
+
+            if ($file['name'] === 'create.blade.php' || 'edit.blade.php') {
+                foreach ($dataFields as $field) {
+                    $formField = $this->createFormField($field, $modelName, $file['name']);
+                    $fields = $fields . "\n$formField";
+                }
+
+                $fileContents = str_replace('**fields**', $fields, $fileContents);
+            }
+
+            $fileContents = str_replace([
+                '**nameLowerCase**',
+                '**nameUppercase**',
+                '**namePluralLowercase**',
+                '**namePluralUppercase**',
+                '**enctype**',
+            ], [
+                $modelName,
+                ucfirst($modelName),
+                Str::plural($modelName),
+                ucfirst(Str::plural($modelName)),
+                'enctype="multipart/form-data', // only with file upload
+            ], $fileContents);
+
+            $storageDriver->put($file['targetDir'] . $file['name'], $fileContents);
+        }
+
 
        // Storage::disk('local')->put('/resources/views/' . strtolower($modelName) . '/create.blade.php', $file);
         $this->info('Tested command!');
     }
 
-    private function createFormField($field)
+    /**
+     * Undocumented function
+     *
+     * @param array $field
+     * @param string $modelName
+     * @param string $fileName
+     * @return void
+     */
+    private function createFormField($field, $modelName, $fileName)
     {
-        $fieldOptions = [
-            1 => 'text',
-            2 => 'textarea',
-        ];
-
         $formField = '';
-        if (isset($fieldOptions[$field])) {
-            $name = strtolower($this->ask('Submit a name for the field'));
-            switch ($fieldOptions[$field]) {
-                case 'text':
-                    $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-text.stub');
-                    break;
-                case 'textarea':
-                    $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-textarea.stub');
-                    break;
-            }
 
-            $formField = str_replace([
-                '**nameUpperCase**',
-                '**nameLowerCase**',
-                '**formValue**',
-            ], [
-                ucfirst($name),
-                $name,
-                "{{ old('" . $name . "') }}",
-            ], $formField);
-        } else {
-            $this->error('You submitted an invalid option.');
+        switch ($this->fieldOptions[$field['type']]) {
+            case 'text':
+                $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-text.stub');
+                break;
+            case 'textarea':
+                $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-textarea.stub');
+                break;
         }
+
+        $formField = str_replace([
+            '**nameUpperCase**',
+            '**nameLowerCase**',
+            '**formValue**',
+        ], [
+            ucfirst($field['name']),
+            $field['name'],
+            $fileName === 'create.blade.php' ?
+                "{{ old('{" . $field['name'] . "}') }}" :
+                "{{ old('{" . $field['name'] . "}', $" . $modelName . "->" . $field['name'] . ") }}",
+        ], $formField);
 
         return $formField;
     }
