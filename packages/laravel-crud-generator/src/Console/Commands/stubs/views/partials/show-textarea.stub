@@ -1,0 +1,4 @@
+                <tr>
+                    <th>**nameUppercase**</th>
+                    <td>{!! nl2br(e($**modelNameCamelcase**->**nameCamelcase**)) !!}</td>
+                </tr>

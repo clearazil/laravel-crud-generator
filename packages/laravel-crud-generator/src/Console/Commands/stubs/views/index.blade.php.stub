@@ -1,0 +1,40 @@
+@extends('layouts.main')
+
+@section('content')
+
+    <h4 class="h-remove-top"><a href="{{ route('**modelNamePluralLowercase**.index') }}">**modelNameUppercase**</a></h4>
+
+    <a class="btn btn-primary" href="{{ route('**modelNamePluralLowercase**.create') }}">New **modelNameUppercase**</a>
+
+    @if (Session::has('message') && Session::has('message-status'))
+        <div class="alert {{ Session::get('message-status') === 'error' ? 'alert-danger' : '' }} {{ Session::get('message-status') === 'success' ? 'alert-success' : '' }}" role="alert">
+            {{ Session::get('message') }}
+        </div>
+    @endif
+
+    <div class="table-responsive">
+
+        <table class="table">
+                <thead>
+                <tr>
+                    **indexHeadings**
+                    <th>Created on</th>
+                    <th>Updated on</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach ($**modelNamePluralCamelcase** as $**modelNameCamelcase**)
+                        <tr>
+                            **fields**
+                            <td>{{ $**modelNameCamelcase**->created_at->isoformat('D-M-Y HH:mm:ss') }}</td>
+                            <td>{{ $**modelNameCamelcase**->updated_at->isoformat('D-M-Y HH:mm:ss') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+        </table>
+
+    </div>
+
+    {{ $examples->links() }}
+
+@endsection

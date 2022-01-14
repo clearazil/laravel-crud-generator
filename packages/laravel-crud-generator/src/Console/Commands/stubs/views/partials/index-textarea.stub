@@ -1,0 +1,1 @@
+                            <td><a href="{{ route('**modelNamePluralLowercase**.show', ['**modelNameLowercase**' => $**modelNameLowercase**->id]) }}" title="">{!! nl2br(e($**modelNameLowercase**->**nameCamelcase**)) !!}</a></td>

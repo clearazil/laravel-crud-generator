@@ -1,7 +1,7 @@
         <div class="mb-3">
-            <label for="**nameLowerCase**" class="form-label">**nameUpperCase**</label>
-            @error('**nameLowerCase**')
+            <label for="**nameLowercase**" class="form-label">**nameUppercase**</label>
+            @error('**nameLowercase**')
                 <div class="warning">{{ $message }}</div>
             @enderror
-            <textarea name="**nameLowerCase**" class="form-control" id="**nameLowerCase**">**formValue**</textarea>
+            <textarea name="**nameLowercase**" class="form-control" id="**nameLowercase**">**formValue**</textarea>
         </div>

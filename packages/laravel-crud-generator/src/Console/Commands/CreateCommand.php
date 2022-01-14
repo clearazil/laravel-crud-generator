@@ -48,7 +48,6 @@ class CreateCommand extends Command
      */
     public function handle()
     {
-        //var_dump(__DIR__);die;
         $modelName = strtolower($this->ask('Model name:'));
 
         $storageDriver = Storage::build([
@@ -67,11 +66,19 @@ class CreateCommand extends Command
                 'targetDir' => 'resources/views/' . $modelName . '/',
                 'name' => 'edit.blade.php',
             ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/views/show.blade.php.stub'),
+                'targetDir' => 'resources/views/' . $modelName . '/',
+                'name' => 'show.blade.php',
+            ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/views/index.blade.php.stub'),
+                'targetDir' => 'resources/views/' . $modelName . '/',
+                'name' => 'index.blade.php',
+            ],
         ];
 
         $type = '';
-
-
         $dataFields = [];
 
         while ($type !== null) {
@@ -104,74 +111,108 @@ class CreateCommand extends Command
             ];
         }
 
+        $indexHeadings = '';
+        $headingContent = file_get_contents(__DIR__ . '/stubs/views/partials/indexHeading.stub');
+
+        foreach ($dataFields as $field) {
+            $indexHeadings = $indexHeadings .
+                str_replace('**nameUppercase**', ucfirst($field['name']), $headingContent);
+        }
+
+        $indexHeadings = trim($indexHeadings);
+
         foreach ($files as $file) {
             $fields = '';
             $fileContents = $file['contents'];
 
-            if ($file['name'] === 'create.blade.php' || 'edit.blade.php') {
+            $viewFiles = [
+                'create.blade.php',
+                'edit.blade.php',
+                'show.blade.php',
+                'index.blade.php',
+            ];
+
+            if (in_array($file['name'], $viewFiles)) {
                 foreach ($dataFields as $field) {
-                    $formField = $this->createFormField($field, $modelName, $file['name']);
-                    $fields = $fields . "\n$formField";
+                    $fields = $fields . "\n" . trim($this->createPartialField($field, $modelName, $file['name']), "\n");
                 }
 
-                $fileContents = str_replace('**fields**', $fields, $fileContents);
+                $fileContents = str_replace('**fields**', $fields, trim($fileContents, "\n"));
             }
 
             $fileContents = str_replace([
-                '**nameLowerCase**',
-                '**nameUppercase**',
-                '**namePluralLowercase**',
-                '**namePluralUppercase**',
+                '**modelNameLowercase**',
+                '**modelNameUppercase**',
+                '**modelNamePluralLowercase**',
+                '**modelNamePluralUppercase**',
+                '**modelNameCamelcase**',
+                '**modelNamePluralCamelcase**',
+                '**indexHeadings**',
                 '**enctype**',
             ], [
                 $modelName,
                 ucfirst($modelName),
                 Str::plural($modelName),
                 ucfirst(Str::plural($modelName)),
+                Str::camel($modelName),
+                Str::camel(Str::plural($modelName)),
+                $indexHeadings,
                 'enctype="multipart/form-data', // only with file upload
             ], $fileContents);
 
             $storageDriver->put($file['targetDir'] . $file['name'], $fileContents);
         }
 
-
-       // Storage::disk('local')->put('/resources/views/' . strtolower($modelName) . '/create.blade.php', $file);
         $this->info('Tested command!');
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param array $field
-     * @param string $modelName
-     * @param string $fileName
-     * @return void
-     */
-    private function createFormField($field, $modelName, $fileName)
+    private function createPartialField($field, $modelName, $fileName)
     {
-        $formField = '';
+        $fieldContent = '';
+
+        $partialType = 'form';
+
+        if ($fileName === 'show.blade.php') {
+            $partialType = 'show';
+        } elseif ($fileName === 'index.blade.php') {
+            $partialType = 'index';
+        }
 
         switch ($this->fieldOptions[$field['type']]) {
             case 'text':
-                $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-text.stub');
+                $fieldContent = file_get_contents(__DIR__ . '/stubs/views/partials/' . $partialType . '-text.stub');
                 break;
             case 'textarea':
-                $formField = file_get_contents(__DIR__ . '/stubs/views/partials/form-textarea.stub');
+                $fieldContent = file_get_contents(__DIR__ . '/stubs/views/partials/' . $partialType . '-textarea.stub');
                 break;
         }
 
-        $formField = str_replace([
-            '**nameUpperCase**',
-            '**nameLowerCase**',
+        $formValue = '';
+
+        if ($fileName === 'create.blade.php') {
+            $formValue = "{{ old('{" . $field['name'] . "}') }}";
+        } elseif ($fileName === 'edit.blade.php') {
+            $formValue =  "{{ old('{" . $field['name'] . "}', $" . $modelName . "->" . $field['name'] . ") }}";
+        }
+
+        $fieldContent = str_replace([
+            '**nameUppercase**',
+            '**nameLowercase**',
+            '**nameCamelcase**',
+            '**modelNamePluralLowercase**',
+            '**modelNameLowercase**',
+            '**modelNameCamelcase**',
             '**formValue**',
         ], [
             ucfirst($field['name']),
             $field['name'],
-            $fileName === 'create.blade.php' ?
-                "{{ old('{" . $field['name'] . "}') }}" :
-                "{{ old('{" . $field['name'] . "}', $" . $modelName . "->" . $field['name'] . ") }}",
-        ], $formField);
+            Str::camel($field['name']),
+            Str::plural($modelName),
+            $modelName,
+            Str::camel($modelName),
+            $formValue,
+        ], $fieldContent);
 
-        return $formField;
+        return $fieldContent;
     }
 }
