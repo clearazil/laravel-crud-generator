@@ -2,6 +2,7 @@
 
 namespace Clearazil\LaravelCrudGenerator\Console\Commands;
 
+use \DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -74,6 +75,12 @@ class CreateCommand extends Command
                 'targetDir' => 'app/Http/Controllers/',
                 'name' => ucfirst(Str::camel($modelName)) . 'Controller.php',
             ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/database/migrations/create-new-table.stub'),
+                'targetDir' => 'database/migrations/',
+                'name' => (new DateTime())->format('Y_m_d') .
+                    '_000000_create_' .  Str::plural(Str::snake($modelName)) . '_table.php',
+            ],
         ];
     }
 
@@ -130,6 +137,7 @@ class CreateCommand extends Command
 
         $fillables = '';
         $validationRules = '';
+        $columns = '';
 
         foreach ($dataFields as $field) {
             $indexHeadings = $indexHeadings .
@@ -142,11 +150,19 @@ class CreateCommand extends Command
                 $field['name'],
                 file_get_contents(__DIR__ . '/stubs/controller/partials/validation-rule.stub')
             );
+
+            $columns = $columns . str_replace(
+                '**fieldName**',
+                Str::snake($field['name']),
+                file_get_contents(__DIR__ . '/stubs/database/migrations/partials/column-' .
+                    $this->fieldOptions[$field['type']] . '.stub')
+            );
         }
 
         $indexHeadings = trim($indexHeadings);
         $fillables = trim($fillables);
         $validationRules = trim($validationRules);
+        $columns = trim($columns);
 
         foreach ($files as $file) {
             $fields = '';
@@ -174,7 +190,11 @@ class CreateCommand extends Command
                 '**modelNamePluralUppercase**',
                 '**modelNameCamelcase**',
                 '**modelNamePluralCamelcase**',
+                '**modelNamePluralPascalcase**',
                 '**modelNamePascalcase**',
+                '**modelNamePluralSnakecase**',
+                '**modelNameSnakecase**',
+                '**columns**',
                 '**validationRules**',
                 '**fillables**',
                 '**indexHeadings**',
@@ -186,7 +206,11 @@ class CreateCommand extends Command
                 ucfirst(Str::plural($modelName)),
                 Str::camel($modelName),
                 Str::camel(Str::plural($modelName)),
+                ucfirst(Str::camel(Str::plural($modelName))),
                 ucfirst(Str::camel($modelName)),
+                Str::snake(Str::plural($modelName)),
+                Str::snake($modelName),
+                $columns,
                 $validationRules,
                 $fillables,
                 $indexHeadings,
