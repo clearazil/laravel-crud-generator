@@ -8,7 +8,7 @@
         <a href="{{ route('**modelNamePluralLowercase**.edit', ['**modelNameLowercase**' => $**modelNameLowercase**->id]) }}">Edit</a>
     </h4>
 
-    <form method="POST" action="{{ route('**modelNamePluralLowercase**.store') }}" **enctype**">
+    <form method="POST" action="{{ route('**modelNamePluralLowercase**.update', ['**modelNameLowercase**' => $**modelNameLowercase**->id]) }}" **enctype**">
         @csrf
         @method('PUT')
         **fields**

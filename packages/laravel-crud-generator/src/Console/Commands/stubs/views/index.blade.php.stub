@@ -35,6 +35,6 @@
 
     </div>
 
-    {{ $examples->links() }}
+    {{ $**modelNamePluralCamelcase**->links() }}
 
 @endsection
