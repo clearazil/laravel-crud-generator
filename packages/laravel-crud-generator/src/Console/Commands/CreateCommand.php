@@ -41,21 +41,9 @@ class CreateCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle()
+    private function getFiles($modelName)
     {
-        $modelName = strtolower($this->ask('Model name:'));
-
-        $storageDriver = Storage::build([
-            'driver' => 'local',
-            'root' => base_path(),
-        ]);
-
-        $files = [
+        return [
             [
                 'contents' => file_get_contents(__DIR__ . '/stubs/views/create.blade.php.stub'),
                 'targetDir' => 'resources/views/' . $modelName . '/',
@@ -76,10 +64,36 @@ class CreateCommand extends Command
                 'targetDir' => 'resources/views/' . $modelName . '/',
                 'name' => 'index.blade.php',
             ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/model/Model.php.stub'),
+                'targetDir' => 'app/Models/',
+                'name' => ucfirst(Str::camel($modelName)) . '.php',
+            ],
+            [
+                'contents' => file_get_contents(__DIR__ . '/stubs/controller/CrudController.php.stub'),
+                'targetDir' => 'app/Http/Controllers/',
+                'name' => ucfirst(Str::camel($modelName)) . 'Controller.php',
+            ],
         ];
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $modelName = strtolower($this->ask('Model name:'));
+
+        $storageDriver = Storage::build([
+            'driver' => 'local',
+            'root' => base_path(),
+        ]);
 
         $type = '';
         $dataFields = [];
+        $files = $this->getFiles($modelName);
 
         while ($type !== null) {
             $typeIsValid = false;
@@ -114,12 +128,17 @@ class CreateCommand extends Command
         $indexHeadings = '';
         $headingContent = file_get_contents(__DIR__ . '/stubs/views/partials/indexHeading.stub');
 
+        $fillables = '';
+
         foreach ($dataFields as $field) {
             $indexHeadings = $indexHeadings .
                 str_replace('**nameUppercase**', ucfirst($field['name']), $headingContent);
+
+            $fillables = $fillables . '\'' . $field['name'] . '\', ';
         }
 
         $indexHeadings = trim($indexHeadings);
+        $fillables = trim($fillables);
 
         foreach ($files as $file) {
             $fields = '';
@@ -147,6 +166,8 @@ class CreateCommand extends Command
                 '**modelNamePluralUppercase**',
                 '**modelNameCamelcase**',
                 '**modelNamePluralCamelcase**',
+                '**modelNamePascalcase**',
+                '**fillables**',
                 '**indexHeadings**',
                 '**enctype**',
             ], [
@@ -156,6 +177,8 @@ class CreateCommand extends Command
                 ucfirst(Str::plural($modelName)),
                 Str::camel($modelName),
                 Str::camel(Str::plural($modelName)),
+                ucfirst(Str::camel($modelName)),
+                $fillables,
                 $indexHeadings,
                 'enctype="multipart/form-data', // only with file upload
             ], $fileContents);

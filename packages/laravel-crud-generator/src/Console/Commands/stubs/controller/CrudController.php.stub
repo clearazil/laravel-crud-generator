@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\**modelNamePascalcase**;
+
+class **modelNamePascalcase**Controller extends Controller
+{
+    public function index()
+    {
+        $**modelNamePluralLowercase** = **modelNamePascalcase**::orderBy('created_at', 'desc');
+
+        return view('**modelNameCamelcase**.index', [
+            '**modelNamePluralLowercase**' => $**modelNamePluralLowercase**->paginate(10),
+        ]);
+    }
+
+    public function show(**modelNamePascalcase** $**modelNameCamelcase**)
+    {
+        return view('**modelNameCamelcase**.show', [
+            '**modelNameCamelcase**' => $**modelNameCamelcase**,
+        ]);
+    }
+
+    public function create()
+    {
+        return view('**modelNameCamelcase**.create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $this->validate**modelNamePascalcase**($request);
+
+        $**modelNameCamelcase** = new **modelNamePascalcase**($data);
+
+        $**modelNameCamelcase**->save();
+
+        return redirect(route('**modelNamePluralLowercase**.show', ['**modelNameCamelcase**' => $**modelNameCamelcase**->id]));
+    }
+
+    public function edit(**modelNamePascalcase** $**modelNameCamelcase**, Request $request)
+    {
+        return view('**modelNameCamelcase**.edit', [
+            '**modelNameCamelcase**' => $**modelNameCamelcase**,
+        ]);
+    }
+
+    public function update(**modelNamePascalcase** $**modelNameCamelcase**, Request $request)
+    {
+        $data = $this->validate**modelNamePascalcase**($request);
+
+        $**modelNameCamelcase**->fill($data);
+        $**modelNameCamelcase**->save();
+
+        return redirect(route('**modelNamePluralLowercase**.show', ['**modelNameCamelcase**' => $**modelNameCamelcase**->id]));
+    }
+
+    public function destroy(**modelNamePascalcase** $**modelNameCamelcase**, Request $request)
+    {
+        if ($**modelNameCamelcase**->delete()) {
+            $messageStatus = 'success';
+            $request->session()->flash('message', 'Deleted **modelNameCamelcase**.');
+        } else {
+            $messageStatus = 'error';
+            $request->session()->flash('message', 'An error occurred while trying to delete the **modelNameCamelcase**.');
+        }
+
+        $request->session()->flash('message-status', $messageStatus);
+
+        return redirect(route('**modelNamePluralLowercase**.index'));
+    }
+
+    public function validate**modelNamePascalcase**(Request $request)
+    {
+        return $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+    }
+}
