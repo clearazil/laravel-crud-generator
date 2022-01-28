@@ -74,8 +74,7 @@ class **modelNamePascalcase**Controller extends Controller
     public function validate**modelNamePascalcase**(Request $request)
     {
         return $request->validate([
-            'title' => 'required',
-            'body' => 'required',
+            **validationRules**
         ]);
     }
 }

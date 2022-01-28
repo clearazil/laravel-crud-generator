@@ -129,16 +129,24 @@ class CreateCommand extends Command
         $headingContent = file_get_contents(__DIR__ . '/stubs/views/partials/indexHeading.stub');
 
         $fillables = '';
+        $validationRules = '';
 
         foreach ($dataFields as $field) {
             $indexHeadings = $indexHeadings .
                 str_replace('**nameUppercase**', ucfirst($field['name']), $headingContent);
 
             $fillables = $fillables . '\'' . $field['name'] . '\', ';
+
+            $validationRules = $validationRules . str_replace(
+                '**fieldName**',
+                $field['name'],
+                file_get_contents(__DIR__ . '/stubs/controller/partials/validation-rule.stub')
+            );
         }
 
         $indexHeadings = trim($indexHeadings);
         $fillables = trim($fillables);
+        $validationRules = trim($validationRules);
 
         foreach ($files as $file) {
             $fields = '';
@@ -167,6 +175,7 @@ class CreateCommand extends Command
                 '**modelNameCamelcase**',
                 '**modelNamePluralCamelcase**',
                 '**modelNamePascalcase**',
+                '**validationRules**',
                 '**fillables**',
                 '**indexHeadings**',
                 '**enctype**',
@@ -178,6 +187,7 @@ class CreateCommand extends Command
                 Str::camel($modelName),
                 Str::camel(Str::plural($modelName)),
                 ucfirst(Str::camel($modelName)),
+                $validationRules,
                 $fillables,
                 $indexHeadings,
                 'enctype="multipart/form-data', // only with file upload
@@ -186,7 +196,7 @@ class CreateCommand extends Command
             $storageDriver->put($file['targetDir'] . $file['name'], $fileContents);
         }
 
-        $this->info('Tested command!');
+        $this->info('Files created!');
     }
 
     private function createPartialField($field, $modelName, $fileName)
